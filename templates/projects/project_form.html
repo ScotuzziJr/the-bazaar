@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if edit_mode %}Editar Projeto{% else %}Novo Projeto{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">
+            {% if edit_mode %}Salvar Alterações{% else %}Criar Projeto{% endif %}
+        </button>
+        <a href="{% if edit_mode %}{% url 'project_detail' form.instance.pk %}{% else %}{% url 'project_list' %}{% endif %}" 
+           class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

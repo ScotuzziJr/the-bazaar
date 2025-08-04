@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ project.title }}</h2>
+        <p class="text-muted">
+            Criado por <a href="{% url 'profile' project.creator.username %}">{{ project.creator.username }}</a>
+        </p>
+        <p>{{ project.description }}</p>
+
+        {% if project.repo_url %}
+            <p><strong>Repositório:</strong> <a href="{{ project.repo_url }}" target="_blank">{{ project.repo_url }}</a></p>
+        {% endif %}
+        {% if project.website_url %}
+            <p><strong>Site:</strong> <a href="{{ project.website_url }}" target="_blank">{{ project.website_url }}</a></p>
+        {% endif %}
+
+        {% if tags %}
+            <p>
+                {% for tag in tags %}
+                    <span class="badge bg-secondary">{{ tag }}</span>
+                {% endfor %}
+            </p>
+        {% endif %}
+
+        {% if user == project.creator %}
+            <a href="{% url 'project_requests' project.pk %}" class="btn btn-outline-primary btn-sm mb-3">
+                Ver solicitações de colaboração
+            </a>
+        {% endif %}
+
+        {% if request.user == project.creator %}
+            <a href="{% url 'project_edit' project.pk %}" class="btn btn-outline-primary btn-sm mb-3">
+                ✏️ Editar Projeto
+            </a>
+        {% endif %}
+
+        <hr>
+
+        <h4>Funções Abertas</h4>
+        {% if roles %}
+            <ul>
+                {% for role in roles %}
+                    <li><strong>{{ role.get_role_display }}</strong>: {{ role.description }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Nenhuma função aberta no momento.</p>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        {% if user.is_authenticated %}
+            <div class="card">
+                <div class="card-body">
+                    <h5>Quero colaborar</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ join_form|crispy }}
+                        <button class="btn btn-success w-100">Enviar Solicitação</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <a href="{% url 'login' %}">Entre</a> para enviar uma solicitação de colaboração.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<hr>
+<h4>Colaboradores</h4>
+<div class="row">
+    {% for profile in collaborators %}
+        <div class="col-md-2 col-4 text-center mb-3">
+            <a href="{% url 'profile' profile.user.username %}">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" class="img-fluid rounded-circle mb-1" style="width:80px; height:80px; object-fit:cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/80" class="img-fluid rounded-circle mb-1">
+                {% endif %}
+                <div>{{ profile.user.username }}</div>
+            </a>
+        </div>
+    {% empty %}
+        <p class="text-muted">Nenhum colaborador aprovado ainda.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-1">
+        {% if profile_user.profile.avatar %}
+            <img src="{{ profile_user.profile.avatar.url }}" class="img-fluid rounded-circle" width="150" height="150">
+        {% else %}
+            <img src="https://via.placeholder.com/150" class="img-fluid rounded-circle">
+        {% endif %}
+    </div>
+    <div class="col-md-9">
+        <h3>{{ profile_user.username }}</h3>
+        <p>{{ profile_user.profile.bio }}</p>
+        {% if request.user == profile_user %}
+            <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Editar Perfil</a>
+        {% endif %}
+    </div>
+</div>
+
+<hr>
+<h4>Projetos de {{ profile_user.username }}</h4>
+<ul>
+{% for project in profile_user.project_set.all %}
+    <li><a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a></li>
+{% empty %}
+    <p>Este usuário ainda não criou projetos.</p>
+{% endfor %}
+</ul>
+
+<hr>
+<h4>Projetos que {{ profile_user.username }} colabora</h4>
+<ul>
+{% for project in collaborated_projects %}
+    <li><a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a></li>
+{% empty %}
+    <p class="text-muted">Não colabora em nenhum projeto no momento.</p>
+{% endfor %}
+</ul>
+{% endblock %}

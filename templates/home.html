@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="mb-4">Bem-vindo ao <strong>The Bazaar</strong></h1>
+    <p class="lead mb-5">
+        Uma rede social para criadores de projetos open source de baixa visibilidade 
+        conectarem-se a colaboradores, construírem comunidades e fazerem suas ideias crescerem.
+    </p>
+
+    <div class="mb-4">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-2">Crie sua conta</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Entrar</a>
+    </div>
+
+    <hr class="my-5" style="opacity: 0.2;">
+
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <h3>🚀 Mostre seu projeto</h3>
+            <p>Cadastre seu projeto e apresente-o para a comunidade.</p>
+        </div>
+        <div class="col-md-4">
+            <h3>🤝 Encontre colaboradores</h3>
+            <p>Divulgue o que está buscando e atraia pessoas interessadas.</p>
+        </div>
+        <div class="col-md-4">
+            <h3>🌱 Construa comunidade</h3>
+            <p>Interaja com outros criadores e fortaleça seu projeto.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
