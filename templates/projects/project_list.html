@@ -1,19 +1,65 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h1>Projetos</h1>
-<div class="row">
-{% for project in projects %}
-    <div class="col-md-4 mb-3">
-        <div class="card">
+
+<h2 class="mb-4">Projetos Open Source</h2>
+
+<!-- Barra de filtros -->
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="search" class="form-control"
+               placeholder="Buscar por título ou descrição..."
+               value="{{ request.GET.search }}">
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="tag" class="form-control"
+               placeholder="Filtrar por tag (ex.: Python)"
+               value="{{ request.GET.tag }}">
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<!-- Lista de projetos -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for project in projects %}
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h5>{{ project.title }}</h5>
-                <p>{{ project.description|truncatechars:100 }}</p>
-                <a href="{% url 'project_detail' project.pk %}" class="btn btn-primary btn-sm">Ver mais</a>
+                <h5 class="card-title">
+                    <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none">
+                        {{ project.title }}
+                    </a>
+                </h5>
+                <p class="card-text text-muted">
+                    {{ project.description|truncatewords:20 }}
+                </p>
+
+                {% if project.tag_list %}
+                    <p>
+                        {% for tag in project.tag_list %}
+                            <a href="?tag={{ tag }}" class="badge bg-secondary text-decoration-none">
+                                {{ tag }}
+                            </a>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+
+            </div>
+            <div class="card-footer bg-white">
+                <small class="text-muted">
+                    Criado por <a href="{% url 'profile' project.creator.username %}">
+                        {{ project.creator.username }}
+                    </a>
+                </small>
             </div>
         </div>
     </div>
-{% empty %}
-<p>Nenhum projeto encontrado.</p>
-{% endfor %}
+    {% empty %}
+        <p class="text-muted">Nenhum projeto encontrado.</p>
+    {% endfor %}
 </div>
+
 {% endblock %}

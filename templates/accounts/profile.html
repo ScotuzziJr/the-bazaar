@@ -15,6 +15,8 @@
         <p>{{ profile_user.profile.bio }}</p>
         {% if request.user == profile_user %}
             <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Editar Perfil</a>
+            <a href="{% url 'export_data' %}" class="btn btn-outline-secondary">Exportar Dados</a>
+            <a href="{% url 'delete_account' %}" class="btn btn-outline-danger">Excluir Conta</a>
         {% endif %}
     </div>
 </div>

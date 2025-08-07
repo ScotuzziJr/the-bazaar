@@ -1,3 +1,5 @@
+import json
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -68,3 +70,54 @@ def edit_profile_view(request):
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'accounts/edit_profile.html', {'form': form})
+
+@login_required
+def delete_account_view(request):
+    if request.method == "POST":
+        user = request.user
+        user.delete()
+        return redirect('project_list')
+    return render(request, 'accounts/delete_account.html')
+
+@login_required
+def export_data_view(request):
+    user = request.user
+    profile = user.profile
+
+    data = {
+        "username": user.username,
+        "email": user.email,
+        "bio": profile.bio,
+        "website": profile.website,
+        "github": profile.github,
+        "twitter": profile.twitter,
+        "projects_created": [
+            {
+                "title": p.title,
+                "description": p.description,
+                "tags": p.tags
+            }
+            for p in user.project_set.all()
+        ],
+        "projects_collaborating": [
+            {
+                "title": req.project.title,
+                "description": req.project.description,
+                "tags": req.project.tags
+            }
+            for req in user.project_requests.filter(status='A')
+        ]
+    }
+
+    response = HttpResponse(
+        json.dumps(data, ensure_ascii=False, indent=4),
+        content_type="application/json"
+    )
+    response['Content-Disposition'] = f'attachment; filename="{user.username}_data.json"'
+    return response
+
+def terms_view(request):
+    return render(request, 'legal/terms.html')
+
+def privacy_view(request):
+    return render(request, 'legal/privacy.html')

@@ -11,10 +11,10 @@
         <p>{{ project.description }}</p>
 
         {% if project.repo_url %}
-            <p><strong>Repositório:</strong> <a href="{{ project.repo_url }}" target="_blank">{{ project.repo_url }}</a></p>
+            <p><strong>Repositório:</strong> <a href="{{ project.repo_url }}" target="_blank" rel="noopener">{{ project.repo_url }}</a></p>
         {% endif %}
         {% if project.website_url %}
-            <p><strong>Site:</strong> <a href="{{ project.website_url }}" target="_blank">{{ project.website_url }}</a></p>
+            <p><strong>Site:</strong> <a href="{{ project.website_url }}" target="_blank" rel="noopener">{{ project.website_url }}</a></p>
         {% endif %}
 
         {% if tags %}
@@ -26,15 +26,14 @@
         {% endif %}
 
         {% if user == project.creator %}
-            <a href="{% url 'project_requests' project.pk %}" class="btn btn-outline-primary btn-sm mb-3">
-                Ver solicitações de colaboração
-            </a>
-        {% endif %}
-
-        {% if request.user == project.creator %}
-            <a href="{% url 'project_edit' project.pk %}" class="btn btn-outline-primary btn-sm mb-3">
-                ✏️ Editar Projeto
-            </a>
+            <div class="mb-3">
+                <a href="{% url 'project_requests' project.pk %}" class="btn btn-outline-primary btn-sm me-2">
+                    Ver solicitações de colaboração
+                </a>
+                <a href="{% url 'project_edit' project.pk %}" class="btn btn-outline-primary btn-sm">
+                    ✏️ Editar Projeto
+                </a>
+            </div>
         {% endif %}
 
         <hr>
@@ -58,6 +57,7 @@
                     <h5>Quero colaborar</h5>
                     <form method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="join_request" value="1">
                         {{ join_form|crispy }}
                         <button class="btn btn-success w-100">Enviar Solicitação</button>
                     </form>
@@ -70,6 +70,49 @@
         {% endif %}
     </div>
 </div>
+
+<hr>
+<h4>Postagens do Projeto</h4>
+
+{% if request.user == project.creator %}
+<form method="post" enctype="multipart/form-data" class="card p-3 shadow-sm border-0 mb-4">
+    {% csrf_token %}
+    <div class="d-flex">
+        {% if request.user.profile.avatar %}
+            <img src="{{ request.user.profile.avatar.url }}" 
+                 class="rounded-circle me-2" 
+                 style="width:40px; height:40px; object-fit:cover;">
+        {% else %}
+            <img src="https://via.placeholder.com/40" class="rounded-circle me-2">
+        {% endif %}
+
+        <textarea name="content" 
+                  class="form-control border-1" 
+                  rows="3" 
+                  placeholder="Compartilhe uma atualização sobre seu projeto..."></textarea>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <input type="file" name="image" class="form-control form-control-sm w-auto">
+        <button type="submit" name="create_post" class="btn btn-primary btn-sm">Publicar</button>
+    </div>
+</form>
+
+{% endif %}
+
+{% for post in posts %}
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>{{ post.author.username }}</strong> <small class="text-muted">{{ post.created_at|date:"d/m/Y H:i" }}</small></p>
+        <p>{{ post.content|linebreaks }}</p>
+        {% if post.image %}
+            <img src="{{ post.image.url }}" class="img-fluid rounded">
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<p class="text-muted">Nenhuma postagem ainda.</p>
+{% endfor %}
 
 <hr>
 <h4>Colaboradores</h4>
@@ -89,4 +132,5 @@
         <p class="text-muted">Nenhum colaborador aprovado ainda.</p>
     {% endfor %}
 </div>
+
 {% endblock %}

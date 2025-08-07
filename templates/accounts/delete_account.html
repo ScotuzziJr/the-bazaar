@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Excluir Conta</h2>
+<p class="text-danger">Esta ação é irreversível. Todos os seus projetos, solicitações e perfil serão apagados.</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+    <a href="{% url 'profile' request.user.username %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
