@@ -134,14 +134,12 @@ USE_TZ = True
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
-if DEBUG:
-    STATICFILES_DIRS = [BASE_DIR / 'static']
-else:
-    STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # onde ficam seus arquivos locais
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # para onde collectstatic vai copiar no deploy
+
+if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
-MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
