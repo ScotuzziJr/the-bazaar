@@ -1,6 +1,6 @@
 # The Bazaar
 
-**The Bazaar** is a collaborative social network for professionals and project creators. It enables users to share projects, connect through likes and comments, invite others to collaborate, and stay updated via notifications.
+[**The Bazaar**](https://the-bazaar.onrender.com) is a collaborative social network for professionals and project creators. It enables users to share projects, connect through likes and comments, invite others to collaborate, and stay updated via notifications.
 
 ## 🌟 Features
 
